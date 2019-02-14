@@ -24,12 +24,16 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const favs = localStorage.getItem('favs') || '';
     this.setState({
         search: gifs,
+        favorites: favs.split(','),
+        activeIndex: parseInt(localStorage.getItem('activeIndex'), 10) || 0,
     });
   }
 
   toggleTabIndex = index => {
+    localStorage.setItem('activeIndex', index)
     this.setState({
         activeIndex: index,
     })
@@ -38,7 +42,10 @@ class App extends Component {
   toggleFav = index => {
         const {favorites, search} = this.state;
 
+        if (favorites.filter(fav => fav === search[index]).length) return;
+
         favorites.push(search[index]);
+        localStorage.setItem('favs', favorites.join(','))
         this.setState({
             favorites, 
         })
@@ -47,9 +54,12 @@ class App extends Component {
   removeFav = index => {
     const {favorites, search} = this.state;
 
+    const newFavs = favorites.slice(0, index).concat(favorites.slice(index+1))
+    localStorage.setItem('favs', newFavs.join(','))
     this.setState({
-        favorites: favorites.slice(0, index).concat(favorites.slice(index+1)),
+        favorites: newFavs,
     })
+
   }
 
   render() {
