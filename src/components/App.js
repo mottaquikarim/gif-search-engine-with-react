@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import { Route, Link } from 'react-router-dom';
 import './App.css';
 
 import {
     Container,
+    Nav,
+    NavItem,
+    NavLink,
 } from 'reactstrap';
 
 import { Tabs } from './Tabs';
@@ -10,6 +14,8 @@ import { Favorites } from './Favorites';
 import { Search } from './Search';
 
 import { gifs } from '../gifs';
+
+const StupidComponent = () => <h1>Hello, Wrold!</h1>
 
 class App extends Component {
   constructor(props) {
@@ -64,17 +70,24 @@ class App extends Component {
 
   render() {
     const {tabNames, activeIndex} = this.state
+
     return <Container>
+        <Nav tabs>
+            <NavItem onClick={() => this.toggleTabIndex(0)} className={activeIndex === 0 ? "active" : ""}>
+                <Link to="/search">Search</Link>
+            </NavItem>
+
+            <NavItem onClick={() => this.toggleTabIndex(1)} className={activeIndex === 1 ? "active" : ""}>
+                <Link to="/favorites">Favroties</Link>
+            </NavItem>
+        </Nav>
+
         <br/>
         <br/>
 
-        <Tabs tabNames={tabNames}
-            onClick={this.toggleTabIndex}
-            activeIndex={activeIndex} />
+        <Route path='/search' render={() => <Search data={this.state.search} click={this.toggleFav}/>} />
+        <Route path='/favorites' render={() => <Favorites data={this.state.favorites} click={this.removeFav} />} />
 
-        {activeIndex === 0 ?
-            <Search data={this.state.search} click={this.toggleFav}/> :
-            <Favorites data={this.state.favorites} click={this.removeFav} />}
     </Container>
   }
 }
